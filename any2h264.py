@@ -15,9 +15,9 @@ class Transcoder:
     output_files : list[str] = field(init=False)
 
     def __post_init__(self) -> list[str]:
-        if self.ffmpeg_path == None:
-            self.ffmpeg_path = 'ffmpeg'
         self.os_type = platform()
+        if self.ffmpeg_path == None:
+            self.ffmpeg_path = '/usr/bin/ffmpeg' if "Linux" in self.os_type else "ffmpeg"
         video_extensions = ['avi','mp4','mkv']
         file_names : list[str] = list(filter(
             lambda filename: filename[-3:] in video_extensions,
