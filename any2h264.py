@@ -31,7 +31,7 @@ class Transcoder:
         for i, input_file in enumerate(self.input_files):
             output_file = self.output_files[i]
             if 'Linux' in self.os_type:
-                ffmpeg_command = f'{self.ffmpeg_path} -hwaccel vaapi -i "{input_file}" -c:v h264 -preset superfast -crf 17 "{output_file}"'
+                ffmpeg_command = f'{self.ffmpeg_path} -hwaccel opencl -i "{input_file}" -c:v h264 -preset superfast -crf 17 "{output_file}"'
             else:
                 ffmpeg_command = f'{self.ffmpeg_path} -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
             system(ffmpeg_command)
