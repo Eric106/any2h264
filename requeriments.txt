@@ -1,0 +1,5 @@
+# conda create -n any2h264 python==3.9.* -y
+
+pyinstaller
+pylint
+autopep8
