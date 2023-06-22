@@ -24,7 +24,8 @@ class Transcoder:
         if not exists(self.output_folder): mkdir(self.output_folder)
         for i, input_file in enumerate(self.input_files):
             output_file = self.output_files[i]
-            system(f'{self.ffmpeg_path} -i "{input_file}" -c:v libx264 -preset ultrafast -crf 17 "{output_file}"')
+            ffmpeg_command = f'{self.ffmpeg_path} -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset ultrafast -crf 17 "{output_file}"'
+            system(ffmpeg_command)
 
 def main():
     parser = ArgumentParser(description="any2h264 args parser")
