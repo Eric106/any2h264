@@ -2,16 +2,22 @@ from os import listdir, system, mkdir
 from os.path import exists
 from argparse import ArgumentParser
 from dataclasses import dataclass, field
+from platform import platform
 
 @dataclass(frozen=False)
 class Transcoder:
+    platform
     input_folder : str = field(init=True)
     output_folder : str = field(init=True)
-    ffmpeg_path : str = field(init=True, default='/usr/bin/ffmpeg')
+    ffmpeg_path : str = field(init=True, default=None)
+    os_type : str = field(init=False)
     input_files : list[str] = field(init=False)
     output_files : list[str] = field(init=False)
 
     def __post_init__(self) -> list[str]:
+        if self.ffmpeg_path == None:
+            self.ffmpeg_path = 'ffmpeg'
+        self.os_type = platform()
         video_extensions = ['avi','mp4','mkv']
         file_names : list[str] = list(filter(
             lambda filename: filename[-3:] in video_extensions,
@@ -24,7 +30,10 @@ class Transcoder:
         if not exists(self.output_folder): mkdir(self.output_folder)
         for i, input_file in enumerate(self.input_files):
             output_file = self.output_files[i]
-            ffmpeg_command = f'{self.ffmpeg_path} -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset ultrafast -crf 17 "{output_file}"'
+            if 'Linux' in self.os_type:
+                ffmpeg_command = f'{self.ffmpeg_path} -hwaccel vaapi -i "{input_file}" -c:v h264_vaapi -preset fast -crf 17 "{output_file}"'
+            else:
+                ffmpeg_command = f'{self.ffmpeg_path} -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
             system(ffmpeg_command)
 
 def main():
@@ -33,10 +42,7 @@ def main():
     parser.add_argument('-o', dest='output_folder', type=str)
     parser.add_argument('-ffmpeg', dest='ffmpeg_path', type=str)
     args = parser.parse_args()
-    if args.ffmpeg_path == None:
-        transcoder = Transcoder(args.input_folder, args.output_folder)
-    else:
-        transcoder = Transcoder(args.input_folder, args.output_folder, args.ffmpeg_path)
+    transcoder = Transcoder(args.input_folder, args.output_folder, args.ffmpeg_path)
     transcoder.transcode_to_h264()
 
 if __name__ == '__main__':
