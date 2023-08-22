@@ -32,11 +32,14 @@ class Transcoder:
     def transcode_to_h264(self):
         if not exists(self.output_folder): mkdir(self.output_folder)
         for i, input_file in enumerate(self.input_files):
+            input_file_extension = input_file.split('.')[-1]
             output_file = self.output_files[i]
             if 'Linux' in self.os_type:
                 ffmpeg_command = f'{self.ffmpeg_path} -y -i "{input_file}" -c:v h264 -preset superfast -crf 17 "{output_file}"'
+            elif 'Windows' in self.os_type and input_file_extension == 'avi':
+                ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -vf format=yuv1080p -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
             else:
-                ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -vf format=yuv420p -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
+                ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
             system(ffmpeg_command)
 
 def main():
