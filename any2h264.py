@@ -39,7 +39,7 @@ class Transcoder:
             elif 'Windows' in self.os_type and input_file_extension == 'avi':
                 ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -vf format=yuv420p -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
             else:
-                ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
+                ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast "{output_file}"'
             system(ffmpeg_command)
 
 def main():
