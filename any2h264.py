@@ -36,12 +36,12 @@ class Transcoder:
             input_file_extension = input_file.split('.')[-1]
             output_file = self.output_files[i]
             if 'Linux' in self.os_type:
-                ffmpeg_command = f'{self.ffmpeg_path} -y -i "{input_file}" -c:v h264 -preset superfast -crf 17 "{output_file}"'
+                ffmpeg_command = f'{self.ffmpeg_path} -y -i "{input_file}" -c:v h264 -preset superfast -crf 17 -c:s copy "{output_file}"'
             elif 'Windows' in self.os_type:
                 if self.ten_bit_encode:
-                    ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -vf format=yuv420p -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
+                    ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -vf format=yuv420p -c:v h264_nvenc -preset fast -crf 17 -c:s copy "{output_file}"'
                 else:
-                    ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 "{output_file}"'
+                    ffmpeg_command = f'{self.ffmpeg_path} -y -hwaccel cuda -i "{input_file}" -c:v h264_nvenc -preset fast -crf 17 -c:s copy "{output_file}"'
             system(ffmpeg_command)
 
 def main():
