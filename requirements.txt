@@ -1,4 +1,4 @@
-# conda create -n any2h264 python==3.9.* -y
+# cd ~/uv_envs ; uv venv any2h264 --seed --python 3.12
 
 pyinstaller
 pylint
