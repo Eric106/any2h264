@@ -22,9 +22,9 @@ class Transcoder:
         self.output_folder = abspath(self.output_folder)
         if self.ffmpeg_path == None:
             self.ffmpeg_path = '/usr/bin/ffmpeg' if "Linux" in self.os_type else "ffmpeg"
-        video_extensions = ['avi','mp4','mkv','m4v']
+        video_extensions = ['avi','mp4','mkv','m4v','webm']
         file_names : list[str] = list(filter(
-            lambda filename: filename[-3:] in video_extensions,
+            lambda filename: filename.split('.')[-1] in video_extensions,
             listdir(self.input_folder)
         ))
         self.input_files = list(map(lambda filename: f'{self.input_folder}/{filename}',file_names))
